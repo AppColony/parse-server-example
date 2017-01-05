@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "DistractedDriver": {
+            "applicationId": "nORiB9P52mCaD1Sm72mKQlhLcjgHGjGkpvW7tZO5", 
+            "masterKey": "R5YWuexk6BUdrCGrkz5HqLDvozv5iAzjw4lUC1AX"
+        }, 
+        "_default": {
+            "link": "DistractedDriver"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.2.18"
+    }
+}
