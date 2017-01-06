@@ -1,13 +1,13 @@
-require('./cloud/Driving.js');
-require('./cloud/POFriendRelation.js');
-require('./cloud/POFriendRequest.js');
-require('./cloud/POPublicUser.js');
-require('./cloud/POTrip.js');
-require('./cloud/Promotion.js');
-require('./cloud/Stats.js');
-require('./cloud/Totals.js');
-require('./cloud/CommunityTotals.js');
-require('./cloud/Community.js');
-require('./cloud/User.js');
-require('./cloud/Installation.js');
+require('./Driving.js');
+require('./POFriendRelation.js');
+require('./POFriendRequest.js');
+require('./POPublicUser.js');
+require('./POTrip.js');
+require('./Promotion.js');
+require('./Stats.js');
+require('./Totals.js');
+require('./CommunityTotals.js');
+require('./Community.js');
+require('./User.js');
+require('./Installation.js');
 
