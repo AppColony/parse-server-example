@@ -2,9 +2,8 @@
 var Buffer = require('buffer').Buffer;
 var Totals = require('./Totals.js');
 
-// Include the Twilio Cloud Module and initialize it
-var twilio = require("twilio");
-twilio.initialize("ACbfe5eb075ed1eb84677d623d014e056a", "6b062fdd7bb98153eda4d0b9c18a91e8");
+// Require and initialize the Twilio module with your credentials
+var twilio = require('twilio')('ACbfe5eb075ed1eb84677d623d014e056a', '6b062fdd7bb98153eda4d0b9c18a91e8');
 
 Parse.Cloud.beforeSave(Parse.User, function(request, response) {
     var user = request.object;
