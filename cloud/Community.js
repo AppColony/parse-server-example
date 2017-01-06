@@ -1,4 +1,4 @@
-var CommunityTotals = require('cloud/CommunityTotals.js');
+var CommunityTotals = require('./CommunityTotals.js');
 
 Date.prototype.addDays = function(days) {
 	var dat = new Date(this.valueOf());

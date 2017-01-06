@@ -1,6 +1,6 @@
 
 var Buffer = require('buffer').Buffer;
-var Totals = require('cloud/Totals.js');
+var Totals = require('./Totals.js');
 
 // Include the Twilio Cloud Module and initialize it
 var twilio = require("twilio");
@@ -127,7 +127,7 @@ Parse.Cloud.afterSave(Parse.User, function(request) {
             useMasterKey:true
         });
     }
-    
+
     for (var i in dirtyKeys) {
         var dirtyKey = dirtyKeys[i];
         if (dirtyKey === "facebookId") {
@@ -137,7 +137,7 @@ Parse.Cloud.afterSave(Parse.User, function(request) {
             if (facebookId != null) {
 
                 //load sha256 library
-                var jssha = require('cloud/jssha256.js');
+                var jssha = require('./jssha256.js');
 
                 //hash facebook Id
                 var digest_hex = jssha.SHA256_hash(facebookId);
@@ -186,7 +186,7 @@ Parse.Cloud.define("verifyPhoneShortCode", function(request, response) {
                     success: function() {
 
                         //load sha256 library
-                        var jssha = require('cloud/jssha256.js');
+                        var jssha = require('./jssha256.js');
 
                         //hash phone number
                         var digest_hex = jssha.SHA256_hash(user.get("phoneNumber"));

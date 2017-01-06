@@ -1,4 +1,4 @@
-var ColumnUtil = require('cloud/ColumnUtil.js');
+var ColumnUtil = require('./ColumnUtil.js');
 
 Parse.Cloud.beforeSave("POFriendRelation", function(request, response) {
 	ColumnUtil.mirrorColumnsForObject(request.object, "friendUserId", "friendUser");

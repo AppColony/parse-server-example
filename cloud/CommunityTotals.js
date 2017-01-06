@@ -1,4 +1,4 @@
-var dateUtil = require('cloud/DateUtil.js');
+var dateUtil = require('./DateUtil.js');
 
 exports.getAllTimeTotals = function(community, callback) {
 	//retrieve the AllTimeTotals object, create with defaults if necessary

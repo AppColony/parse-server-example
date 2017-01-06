@@ -1,4 +1,4 @@
-var dateUtil = require('cloud/DateUtil.js');
+var dateUtil = require('./DateUtil.js');
 
 exports.getGlobalTotals = function(callback) {
 	//retrieve the globalTotals object, create with defaults if necessary
@@ -194,7 +194,7 @@ exports.updateUserTotals = function(trip, totals) {
 			exports.pushArraysIfnecessary(totals);
 
 			var minutesTravelled = dateUtil.getMinutesBetweenDates(startTime, endTime);
-			
+
 			var tripDayDate = new Date(startTime);
 			tripDayDate.setHours(0, 0, 0, 0); //only year, month, day remain
 
@@ -252,7 +252,7 @@ exports.pushArraysIfnecessary = function(totals) {
 		pushArrayToNewDate(7, daysBetween, dayDistanceTravelled);
 		pushArrayToNewDate(7, daysBetween, dayMinutesTravelled);
 		totals.set("lastDay", thisDay);
-	} 
+	}
 
 	var monthDistanceTravelled = totals.get("monthDistanceTravelled");
 	var monthMinutesTravelled = totals.get("monthMinutesTravelled");
@@ -266,7 +266,7 @@ exports.pushArraysIfnecessary = function(totals) {
 		pushArrayToNewDate(12, monthsBetween, monthDistanceTravelled);
 		pushArrayToNewDate(12, monthsBetween, monthMinutesTravelled);
 		totals.set("lastMonth", thisMonth);
-	} 
+	}
 }
 
 /*

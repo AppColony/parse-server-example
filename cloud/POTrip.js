@@ -1,9 +1,9 @@
-var dateUtil = require('cloud/DateUtil.js');
-var Totals = require('cloud/Totals.js');
-var CommunityTotals = require('cloud/CommunityTotals.js');
+var dateUtil = require('./DateUtil.js');
+var Totals = require('./Totals.js');
+var CommunityTotals = require('./CommunityTotals.js');
 
 Parse.Cloud.beforeSave("POTrip", function(request, response) {
-	
+
 	var trip = request.object;
 	trip.set("valid", checkTripValidity(trip));
 	response.success();

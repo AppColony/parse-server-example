@@ -1,6 +1,6 @@
-var dateUtil = require('cloud/DateUtil.js');
-var Totals = require('cloud/Totals.js');
-var CommunityTotals = require('cloud/CommunityTotals.js');
+var dateUtil = require('./DateUtil.js');
+var Totals = require('./Totals.js');
+var CommunityTotals = require('./CommunityTotals.js');
 
 function Interval(start, end) {
 	this.start = start;
@@ -52,7 +52,7 @@ function sumArray(arr) {
 }
 
 Parse.Cloud.define("stats", function(request, response) {
-	
+
 	Parse.Cloud.useMasterKey();
 
 	//number of queries that need to complete successfully to return success
@@ -270,7 +270,7 @@ function friendsStatsFromUserTotals(userTotals, dayIntervals, monthIntervals) {
 
 	if (userTotals) {
 		for (var i = 0; i < userTotals.length; i++) {
-			
+
 			Totals.pushArraysIfnecessary(userTotals[i]);//make sure arrays are set for current day
 
 			friends.missedMessages += userTotals[i].get("missedSMSCount") ? userTotals[i].get("missedSMSCount") : 0;
@@ -287,7 +287,7 @@ function friendsStatsFromUserTotals(userTotals, dayIntervals, monthIntervals) {
 			friends.leaderboardDays[userId] = {};
 			friends.leaderboardDays[userId].meters = sumArray(userTotals[i].get("dayDistanceTravelled"));
 			friends.leaderboardDays[userId].min = sumArray(userTotals[i].get("dayMinutesTravelled"));
-		
+
 			kmDrivenMonths = addArrayContents(kmDrivenMonths, userTotals[i].get("monthDistanceTravelled"));
 			minutesDrivenMonths = addArrayContents(minutesDrivenMonths, userTotals[i].get("monthMinutesTravelled"));
 

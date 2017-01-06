@@ -1,6 +1,6 @@
-var ColumnUtil = require('cloud/ColumnUtil.js');
-var NetworkUtil = require('cloud/NetworkUtil.js');
-var PushNotifications = require('cloud/PushNotifications.js');
+var ColumnUtil = require('./ColumnUtil.js');
+var NetworkUtil = require('./NetworkUtil.js');
+var PushNotifications = require('./PushNotifications.js');
 
 Parse.Cloud.beforeSave("POFriendRequest", function(request, response) {
 
