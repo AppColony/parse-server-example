@@ -92,7 +92,6 @@ function checkTripValidity(trip) {
 }
 
 Parse.Cloud.define("userAggregateData", function(request, response) {
-	Parse.Cloud.useMasterKey();
 
 	var counts = {};
 	counts.sumSMS = 0;
@@ -108,8 +107,8 @@ Parse.Cloud.define("userAggregateData", function(request, response) {
 
 	var query = new Parse.Query("UserTotals");
 	query.equalTo("user", user);
-	query.first({
-		success: function(totals) {
+	query.first({ useMasterKey: true }).then(
+		function(totals) {
 			counts.sumSMS = totals.get("missedSMSCount");
 			counts.sumCall = totals.get("missedCallCount");
 			counts.sumOther = totals.get("missedOtherCount");
@@ -118,10 +117,10 @@ Parse.Cloud.define("userAggregateData", function(request, response) {
 			response.success(counts);
 
 		},
-		error: function(error) {
+		function(error) {
 			//this is valid if the user doesn't have any trips
 			console.log("Couldn't look up UserTotals for: "+request.params.userId);
 			response.success(counts);
 		}
-	});
+	);
 });

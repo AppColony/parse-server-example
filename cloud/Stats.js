@@ -53,8 +53,6 @@ function sumArray(arr) {
 
 Parse.Cloud.define("stats", function(request, response) {
 
-	Parse.Cloud.useMasterKey();
-
 	//number of queries that need to complete successfully to return success
 	var queryCount = 4;
 	var failureFlag = false;
@@ -97,9 +95,8 @@ Parse.Cloud.define("stats", function(request, response) {
 	});
 	var userQuery = new Parse.Query("POFriendRelation");
 	userQuery.equalTo("userId", user);
-	userQuery.find({
-		success: function(friendRelations) {
-
+	userQuery.find({ useMasterKey: true }).then(
+		function(friendRelations) { // success
 			if (friendRelations && friendRelations.length > 0) {
 				var friends = friendRelations.map(function(e) {
 					return e.get("friendUser");
@@ -107,21 +104,19 @@ Parse.Cloud.define("stats", function(request, response) {
 
 				var userTotalsQuery = new Parse.Query("UserTotals");
 				userTotalsQuery.containedIn("user", friends);
-				userTotalsQuery.find({
-					success: function(userTotals) {
-
+				userTotalsQuery.find().then(
+					function(userTotals) { //success
 						responseObj.friends = friendsStatsFromUserTotals(userTotals, dayIntervals, monthIntervals);
-
 						if (--queryCount == 0 && !failureFlag) {
 							response.success(responseObj);
 						}
 					},
-					error: function(error) {
+					function(error) { // error
 						failureFlag = true;
 						console.error("Got an error " + error.code + " : " + error.message);
 						response.error("Error retrieving monthly totals");
 					}
-				});
+				);
 
 			} else {
 				if (--queryCount == 0 && !failureFlag) {
@@ -129,12 +124,12 @@ Parse.Cloud.define("stats", function(request, response) {
 				}
 			}
 		},
-		error: function(error) {
+		function(error) { // error
 			failureFlag = true;
 			console.error("Got an error " + error.code + " : " + error.message);
 			response.error("Error looking up friends");
 		}
-	});
+	);
 
 
 	//global stats
@@ -143,8 +138,8 @@ Parse.Cloud.define("stats", function(request, response) {
 	monthlyQuery.lessThan("date",new Date());
 	monthlyQuery.addDescending("date");
 	monthlyQuery.limit(monthIntervals.length); //last 12 months of data
-	monthlyQuery.find({
-		success: function(monthlyResults) {
+	monthlyQuery.find({ useMasterKey: true }).then(
+		function(monthlyResults) {
 			responseObj.global.minutesDrivenMonths = [];
 			responseObj.global.kmDrivenMonths = [];
 
@@ -175,19 +170,19 @@ Parse.Cloud.define("stats", function(request, response) {
 				response.success(responseObj);
 			}
 		},
-		error: function(error) {
+		function(error) {
 			failureFlag = true;
 			console.error("Got an error " + error.code + " : " + error.message);
 			response.error("Error retrieving monthly totals");
 		}
-	});
+	);
 
 	var dailyQuery = new Parse.Query("DailyTotals");
 	dailyQuery.lessThan("date",new Date());
 	dailyQuery.addDescending("date");
 	dailyQuery.limit(dayIntervals.length); //last 7 days of data
-	dailyQuery.find({
-		success: function(dailyResults) {
+	dailyQuery.find({ useMasterKey: true }).then(
+		function(dailyResults) {
 			responseObj.global.minutesDrivenDays = [];
 			responseObj.global.kmDrivenDays = [];
 			for (var i = 0; i < dayIntervals.length; i++) {
@@ -222,16 +217,16 @@ Parse.Cloud.define("stats", function(request, response) {
 				response.success(responseObj);
 			}
 		},
-		error: function(error) {
+		function(error) {
 			failureFlag = true;
 			console.error("Got an error " + error.code + " : " + error.message);
 			response.error("Error retrieving daily totals");
 		}
-	});
+	);
 
 	var globalQuery = new Parse.Query("GlobalTotals");
-	globalQuery.first({
-		success: function(results) {
+	globalQuery.first({ useMasterKey: true }).then(
+		function(results) {
 			responseObj.global.missedMessages = results.get("missedSMSCount");
 			responseObj.global.missedCalls = results.get("missedCallCount");
 			responseObj.global.missedNotifications = results.get("missedOtherCount");
@@ -244,12 +239,12 @@ Parse.Cloud.define("stats", function(request, response) {
 				response.success(responseObj);
 			}
 		},
-		error: function(error) {
+		function(error) {
 			failureFlag = true;
 			console.error("Got an error " + error.code + " : " + error.message);
 			response.error("Error retrieving global totals");
 		}
-	});
+	);
 });
 
 function friendsStatsFromUserTotals(userTotals, dayIntervals, monthIntervals) {
@@ -374,8 +369,8 @@ Parse.Cloud.define("communityStats", function(request, response) {
 	monthlyQuery.lessThan("date", new Date());
 	monthlyQuery.addDescending("date");
 	monthlyQuery.limit(monthIntervals.length); //last 12 months of data
-	monthlyQuery.find({
-		success: function(monthlyResults) {
+	monthlyQuery.find().then(
+		function(monthlyResults) {
 			responseObj.minutesDrivenMonths = [];
 			responseObj.kmDrivenMonths = [];
 
@@ -406,20 +401,20 @@ Parse.Cloud.define("communityStats", function(request, response) {
 				response.success(responseObj);
 			}
 		},
-		error: function(error) {
+		function(error) {
 			failureFlag = true;
 			console.error("Got an error " + error.code + " : " + error.message);
 			response.error("Error retrieving monthly totals");
 		}
-	});
+	);
 
 	var dailyQuery = new Parse.Query("CommunityDailyTotals");
 	dailyQuery.equalTo("community", community);
 	dailyQuery.lessThan("date",new Date());
 	dailyQuery.addDescending("date");
 	dailyQuery.limit(dayIntervals.length); //last 7 days of data
-	dailyQuery.find({
-		success: function(dailyResults) {
+	dailyQuery.find().then(
+		function(dailyResults) {
 			responseObj.minutesDrivenDays = [];
 			responseObj.kmDrivenDays = [];
 			for (var i = 0; i < dayIntervals.length; i++) {
@@ -454,17 +449,17 @@ Parse.Cloud.define("communityStats", function(request, response) {
 				response.success(responseObj);
 			}
 		},
-		error: function(error) {
+		function(error) {
 			failureFlag = true;
 			console.error("Got an error " + error.code + " : " + error.message);
 			response.error("Error retrieving daily totals");
 		}
-	});
+	);
 
 	var allTimeQuery = new Parse.Query("CommunityAllTimeTotals");
 	allTimeQuery.equalTo("community", community);
-	allTimeQuery.first({
-		success: function(results) {
+	allTimeQuery.first().then(
+		function(results) {
 			responseObj.missedMessages = results.get("missedSMSCount");
 			responseObj.missedCalls = results.get("missedCallCount");
 			responseObj.missedNotifications = results.get("missedOtherCount");
@@ -477,12 +472,12 @@ Parse.Cloud.define("communityStats", function(request, response) {
 				response.success(responseObj);
 			}
 		},
-		error: function(error) {
+		function(error) {
 			failureFlag = true;
 			console.error("Got an error " + error.code + " : " + error.message);
 			response.error("Error retrieving all time totals");
 		}
-	});
+	);
 });
 
 Parse.Cloud.job("statForwardJob", function(request, status) {
