@@ -12,6 +12,7 @@
     "express": "~4.11.x",
     "kerberos": "~0.0.x",
     "parse": "~1.8.0",
+    "morgan": "~1.7.0",
     "twilio": "~2.11",
     "parse-server": "*"
   },
