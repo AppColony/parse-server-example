@@ -64,8 +64,7 @@ Parse.Cloud.beforeSave("POFriendRelation", function(request, response) {
 		        function(error) {
 		            console.log("Failed to save role for friend relation with error " + error.code + " : " + error.message);
 					response.error("Unable to find the role");
-		        },
-		        useMasterKey:true
+		        }
 		    );
 		} else {
 			response.success();
