@@ -49,9 +49,8 @@ Parse.Cloud.beforeSave("POFriendRelation", function(request, response) {
 		if (request.user.id != friendUser.id) {
 		    var roleQuery = new Parse.Query(Parse.Role);
 		    roleQuery.equalTo("name", "user-" + request.user.id);
-		    roleQuery.first({
-		        success: function(role) {
-		            Parse.Cloud.useMasterKey();
+		    roleQuery.first({ useMasterKey: true }).then(
+		        function(role) {
 		            role.relation("users").add(friendUser);
 		            role.save(null, {
 		            	success: function(user) {
@@ -62,12 +61,12 @@ Parse.Cloud.beforeSave("POFriendRelation", function(request, response) {
   						}
 		            });
 		        },
-		        error: function(error) {
+		        function(error) {
 		            console.log("Failed to save role for friend relation with error " + error.code + " : " + error.message);
 					response.error("Unable to find the role");
 		        },
 		        useMasterKey:true
-		    });
+		    );
 		} else {
 			response.success();
 		}
@@ -85,8 +84,8 @@ Parse.Cloud.afterSave("POFriendRelation", function(request) {
 	var query = new Parse.Query("POFriendRequest");
 	query.equalTo("requestingUser", user);
 	query.equalTo("requestedUser", friendUser);
-	query.find({
-		success: function(results) {
+	query.find().then(
+		function(results) {
 			if (results.length > 0) {
 				for (var i = 0; i < results.length; i++) {
 					results[i].destroy();
@@ -96,23 +95,23 @@ Parse.Cloud.afterSave("POFriendRelation", function(request) {
 			var friendQuery = new Parse.Query("POFriendRequest");
 			friendQuery.equalTo("requestingUser", friendUser);
 			friendQuery.equalTo("requestedUser", user);
-			friendQuery.find({
-				success: function(results) {
+			friendQuery.find().then(
+				function(results) {
 					if (results.length > 0) {
 						for (var i = 0; i < results.length; i++) {
 							results[i].destroy();
 						}
 					}
 				},
-				error: function(error) {
+				function(error) {
 					console.log("error when destroying friend request");
 				}
-			});
+			);
 		},
-		error: function(error) {
+		function(error) {
 			console.log("error when destroying friend request");
 		}
-	});
+	);
 });
 
 

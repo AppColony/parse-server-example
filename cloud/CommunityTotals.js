@@ -5,8 +5,8 @@ exports.getAllTimeTotals = function(community, callback) {
 	var CommunityAllTimeTotals = Parse.Object.extend("CommunityAllTimeTotals");
 	var totalQuery = new Parse.Query(CommunityAllTimeTotals);
 	totalQuery.equalTo("community", community);
-	totalQuery.first({
-		success: function(object) {
+	totalQuery.first().then(
+		function(object) { // success
 			var allTimeTotals = object;
 			if (!allTimeTotals) {
 				console.log("CommunityAllTimeTotals not found, creating");
@@ -24,10 +24,10 @@ exports.getAllTimeTotals = function(community, callback) {
 			}
 			callback(allTimeTotals);
 		},
-		error: function(error) {
+		function(error) { // error
 			console.error("Got an error " + error.code + " : " + error.message);
 		}
-	});
+	);
 }
 
 exports.getDailyTotals = function(community, date, callback, failCallback) {
@@ -38,8 +38,8 @@ exports.getDailyTotals = function(community, date, callback, failCallback) {
 	queryDate.setHours(0, 0, 0, 0); //only year, month, day remain
 	totalQuery.equalTo("date", queryDate);
 	totalQuery.equalTo("community", community);
-	totalQuery.first({
-		success: function(object) {
+	totalQuery.first().then(
+		function(object) { //success
 			var dailyTotals = object;
 			if (!dailyTotals) {
 				console.log("CommunityDailyTotals not found, creating");
@@ -58,14 +58,14 @@ exports.getDailyTotals = function(community, date, callback, failCallback) {
 			}
 			callback(dailyTotals);
 		},
-		error: function(error) {
+		function(error) { // error
 			console.error("Got an error " + error.code + " : " + error.message);
 
 			if (failCallback) {
 				failCallback(error);
 			}
 		}
-	});
+	);
 }
 
 exports.getMonthlyTotals = function(community, date, callback, failCallback) {
@@ -77,8 +77,8 @@ exports.getMonthlyTotals = function(community, date, callback, failCallback) {
 	queryDate.setDate(1); //only year, month remain
 	totalQuery.equalTo("date", queryDate);
 	totalQuery.equalTo("community", community);
-	totalQuery.first({
-		success: function(object) {
+	totalQuery.first().then(
+		function(object) {
 			var monthlyTotals = object;
 			if (!monthlyTotals) {
 				console.log("CommunityMonthlyTotals not found, creating");
@@ -97,14 +97,14 @@ exports.getMonthlyTotals = function(community, date, callback, failCallback) {
 			}
 			callback(monthlyTotals);
 		},
-		error: function(error) {
+		function(error) {
 			console.error("Got an error " + error.code + " : " + error.message);
 
 			if (failCallback) {
 				failCallback(error);
 			}
 		}
-	});
+	);
 }
 
 exports.updateTotals = function(trip, totals) {

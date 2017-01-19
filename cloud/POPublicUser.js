@@ -26,8 +26,8 @@ Parse.Cloud.afterSave("POPublicUser", function(request) {
     if (facebookId) {
         var query = new Parse.Query(POPublicUser);
         query.equalTo("facebookIdHashed", facebookId);
-        query.find({
-            success: function(results) {
+        query.find().then(
+            function(results) {
                 if (results.length > 0) {
                     for (var i = 0; i < results.length; i++) {
                         if (user.id != results[i].id) {
@@ -37,6 +37,6 @@ Parse.Cloud.afterSave("POPublicUser", function(request) {
                     }
                 }
             }
-        });
+        );
     }
 });

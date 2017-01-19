@@ -15,8 +15,8 @@ Parse.Cloud.define("getPromotion", function(request, response) {
 	promotionQuery.greaterThan("expiresAt", new Date());
 	promotionQuery.notEqualTo("viewedUsers", user);
 	
-	promotionQuery.first({
-		success: function(promotion) {
+	promotionQuery.first().then(
+		function(promotion) {
 			if (promotion) {
 				promotion.relation("viewedUsers").add(user);
 				promotion.save();
@@ -27,9 +27,9 @@ Parse.Cloud.define("getPromotion", function(request, response) {
 				response.success({});
 			}
 		},
-		error: function(error) {
+		function(error) {
 			console.error("Got an error " + error.code + " : " + error.message);
 			response.error();
 		}
-	});
+	);
 });

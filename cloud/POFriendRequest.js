@@ -14,8 +14,8 @@ Parse.Cloud.beforeSave("POFriendRequest", function(request, response) {
 		var query = new Parse.Query("POFriendRelation");
 		query.equalTo("friendUserId", requestingUser);
 		query.equalTo("userId", requestedUser);
-		query.find({
-			success: function(results) {
+		query.find().then(
+			function(results) {
 				if (results.length > 0) {
 					console.log("Not allowed to create a friend request when already friends.");
 					response.error(JSON.stringify({
@@ -38,8 +38,8 @@ Parse.Cloud.beforeSave("POFriendRequest", function(request, response) {
 					}
 
 					var query = Parse.Query.or(queryFriendRequest, queryInverseFriendRequest);
-					query.find({
-						success: function(results) {
+					query.find().then(
+						function(results) {
 							if (results.length > 0) {
 								console.log("Friend request already exists.");
 								response.error(JSON.stringify({
@@ -50,18 +50,18 @@ Parse.Cloud.beforeSave("POFriendRequest", function(request, response) {
 								response.success();
 							}
 						},
-						error: function(error) {
+						function(error) {
 							console.log("error when checking for existing relations, allowing to continute");
 							response.success();
 						}
-					});
+					);
 				}
 			},
-			error: function(error) {
+			function(error) {
 				console.log("error when checking for existing relations, allowing to continute");
 				response.success();
 			}
-		});
+		);
 	} else {
 		console.log("Love thyself.");
 		response.error(JSON.stringify({
@@ -98,8 +98,8 @@ Parse.Cloud.afterDelete("POFriendRequest", function(request) {
 	queryInverseFriendRequest.equalTo("requestingUser", requestedUser);
 	queryInverseFriendRequest.equalTo("requestedUser", requestingUser);
 
-	queryInverseFriendRequest.find({
-		success: function(results) {
+	queryInverseFriendRequest.find().then(
+		function(results) {
 			Parse.Object.destroyAll(results, {
 				success: function() {},
 				error: function(error) {
@@ -107,10 +107,10 @@ Parse.Cloud.afterDelete("POFriendRequest", function(request) {
 				}
 			});
 		},
-		error: function(error) {
+		function(error) {
 			console.error("Error finding inverse friend relations " + error.code + ": " + error.message);
 		}
-	});
+	);
 });
 
 Parse.Cloud.define("requestedFriend", function(request, response) {

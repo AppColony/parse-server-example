@@ -485,8 +485,8 @@ Parse.Cloud.job("statForwardJob", function(request, status) {
 		// add rows for community totals and normal totals
 
 		var communityQuery = new Parse.Query("Community");
-		communityQuery.find({
-			success: function(results) {
+		communityQuery.find().then(
+			function(results) {
 				var callCount = 2;
 				callCount += results.length * 3;
 
@@ -536,8 +536,8 @@ Parse.Cloud.job("statForwardJob", function(request, status) {
 					});
 				};
 			},
-			error: function(error) {
+			function(error) {
 				status.error("error when loading communities to create total rows");
 			}
-		});
+		);
 });

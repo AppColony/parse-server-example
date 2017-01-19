@@ -108,8 +108,8 @@ Parse.Cloud.afterSave(Parse.User, function(request) {
     if (dirtyKeys.indexOf("channels") > -1) {
         var installationQuery = new Parse.Query(Parse.Installation);
         installationQuery.equalTo("user", user);
-        installationQuery.find({
-            success: function(installations) {
+        installationQuery.find({ useMasterKey: true }).then(
+            function(installations) {
                 if (installations) {
                     for (var i = 0; i < installations.length; i++) {
                         var installation = installations[i];
@@ -120,11 +120,10 @@ Parse.Cloud.afterSave(Parse.User, function(request) {
                     }
                 }
             },
-            error: function(error) {
+            function(error) {
                 console.error("Unable to find installation " + error.code + " : " + error.message);
-            },
-            useMasterKey:true
-        });
+            }
+        );
     }
 
     for (var i in dirtyKeys) {

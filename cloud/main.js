@@ -11,3 +11,7 @@ require('./Community.js');
 require('./User.js');
 require('./Installation.js');
 
+Parse.Cloud.define('hello', function(req, res) {
+  res.success('Hi');
+});
+
