@@ -17,15 +17,15 @@ Parse.Cloud.beforeSave("POFriendRelation", function(request, response) {
 
 	function addAndRemoveChannels(addedChannel, removedChannel) {
 		request.user.remove("channels", removedChannel);
-		request.user.save(null, {
-            success: function(user) {
+		request.user.save().then(
+			function(user) {
 				request.user.addUnique("channels", addedChannel);
 				request.user.save(null, saveOptions);
 			},
-			error: function(user, error) {
+			function(user, error) {
 				response.error("Unable to save the user");
 			}
-        });
+        );
 	}
 
 	function updateChannelsIfNeeded() {
