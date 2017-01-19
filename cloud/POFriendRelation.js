@@ -131,8 +131,7 @@ Parse.Cloud.afterDelete("POFriendRelation", function(request) {
 		        },
 		        function(error) {
 		            console.log("Failed to remove role for friend relation with error " + error.code + " : " + error.message);
-		        },
-		        useMasterKey:true
+		        }
 		    );
 			user.remove("channels", "friend-" + friendUserPointer.id);
 			user.save(null, {useMasterKey:true});
