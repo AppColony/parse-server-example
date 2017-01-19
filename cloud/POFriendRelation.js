@@ -52,14 +52,14 @@ Parse.Cloud.beforeSave("POFriendRelation", function(request, response) {
 		    roleQuery.first({ useMasterKey: true }).then(
 		        function(role) {
 		            role.relation("users").add(friendUser);
-		            role.save(null, {
-		            	success: function(user) {
+		            role.save().then(
+		            	function(user) {
 							updateChannelsIfNeeded();
 						},
-						error: function(user, error) {
+						function(user, error) {
 							response.error("Unable to save the role");
   						}
-		            });
+		            );
 		        },
 		        function(error) {
 		            console.log("Failed to save role for friend relation with error " + error.code + " : " + error.message);
@@ -120,8 +120,8 @@ Parse.Cloud.afterDelete("POFriendRelation", function(request) {
 	var userPointer = request.object.get("user");
 	var friendUserPointer = request.object.get("friendUser");
 
-	userPointer.fetch({
-		success: function(user) {
+	userPointer.fetch({ useMasterKey: true }).then(
+		function(user) {
 		    var roleQuery = new Parse.Query(Parse.Role);
 		    roleQuery.equalTo("name", "user-" + user.id);
 		    roleQuery.first({ useMasterKey: true }).then(
@@ -136,9 +136,8 @@ Parse.Cloud.afterDelete("POFriendRelation", function(request) {
 			user.remove("channels", "friend-" + friendUserPointer.id);
 			user.save(null, {useMasterKey:true});
 		},
-		error: function(myObject, error) {
+		function(myObject, error) {
 			console.error("Unable to find user " + userPointer.id + " " + error.code + " : " + error.message);
-		},
-		useMasterKey: true
-	});
+		}
+	);
 });

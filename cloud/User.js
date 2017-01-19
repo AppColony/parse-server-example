@@ -173,15 +173,15 @@ Parse.Cloud.define("verifyPhoneShortCode", function(request, response) {
     });
     console.log("Saw " + request.params.userId + ". ShortCode: " + request.params.phoneShortCode);
 
-    userPointer.fetch({
-        success: function(user) {
+    userPointer.fetch().then(
+        function(user) {
             var serverShortCode = user.get("phoneShortCode");
 
             if (serverShortCode == request.params.phoneShortCode) {
 
                 user.set("phoneNumberVerified", true);
-                user.save(null, {
-                    success: function() {
+                user.save().then(
+                    function() {
 
                         //load sha256 library
                         var jssha = require('./jssha256.js');
@@ -252,21 +252,21 @@ Parse.Cloud.define("verifyPhoneShortCode", function(request, response) {
                         });
 
                     },
-                    error: function(myObject, error) {
+                    function(myObject, error) {
                         console.error("Error when setting phoneNumberVerified " + error.code + " : " + error.message);
                         response.error("Error when setting phoneNumberVerified");
                     }
-                });
+                );
             } else {
                 console.error("Invalid shortcode sent for " + request.params.userId + ". Expecting: " + serverShortCode + " Recieved: " + request.params.phoneShortCode);
                 response.error("Invalid shortcode sent");
             }
         },
-        error: function(myObject, error) {
+        function(myObject, error) {
             console.error("Unable to find user to verify " + error.code + " : " + error.message);
             response.error("Unable to find user to verify");
         }
-    });
+    );
 });
 
 Parse.Cloud.define("sendPhoneShortCode", function(request, response) {
@@ -276,8 +276,8 @@ Parse.Cloud.define("sendPhoneShortCode", function(request, response) {
     var userPointer = new Parse.User({
         id: request.params.userId
     });
-    userPointer.fetch({
-        success: function(user) {
+    userPointer.fetch().then(
+        function(user) {
             console.log("user: " + user);
 
             var phoneShortCode = Math.floor((Math.random() * 900000) + 100000);
@@ -302,9 +302,9 @@ Parse.Cloud.define("sendPhoneShortCode", function(request, response) {
             });
 
         },
-        error: function(myObject, error) {
+        function(myObject, error) {
             console.error("Unable to find user to send shortcode " + error.code + " : " + error.message);
             response.error("Unable to find user to verify");
         }
-    });
+    );
 });
