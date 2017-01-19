@@ -100,12 +100,12 @@ Parse.Cloud.afterDelete("POFriendRequest", function(request) {
 
 	queryInverseFriendRequest.find().then(
 		function(results) {
-			Parse.Object.destroyAll(results, {
-				success: function() {},
-				error: function(error) {
+			Parse.Object.destroyAll().then(
+				function() {},
+				function(error) {
 					console.error("Error deleting inverse friend relations " + error.code + ": " + error.message);
 				}
-			});
+			);
 		},
 		function(error) {
 			console.error("Error finding inverse friend relations " + error.code + ": " + error.message);
