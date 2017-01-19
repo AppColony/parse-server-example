@@ -124,17 +124,16 @@ Parse.Cloud.afterDelete("POFriendRelation", function(request) {
 		success: function(user) {
 		    var roleQuery = new Parse.Query(Parse.Role);
 		    roleQuery.equalTo("name", "user-" + user.id);
-		    roleQuery.first({
-		        success: function(role) {
-		            Parse.Cloud.useMasterKey();
+		    roleQuery.first({ useMasterKey: true }).then(
+		        function(role) {
 		            role.relation("users").remove(friendUserPointer);
 		            role.save();
 		        },
-		        error: function(error) {
+		        function(error) {
 		            console.log("Failed to remove role for friend relation with error " + error.code + " : " + error.message);
 		        },
 		        useMasterKey:true
-		    });
+		    );
 			user.remove("channels", "friend-" + friendUserPointer.id);
 			user.save(null, {useMasterKey:true});
 		},
