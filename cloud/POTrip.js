@@ -33,8 +33,8 @@ Parse.Cloud.afterSave("POTrip", function(request) {
 		});
 
 		var userQuery = new Parse.Query("User");
-		userQuery.get(trip.get("userId"), {
-			success: function(user) {
+		userQuery.get(trip.get("userId")).then(
+			function(user) {
 				var community = user.get("community");
 				if (community != null) {
 					CommunityTotals.getAllTimeTotals(community, function(globalTotals) {
@@ -48,10 +48,10 @@ Parse.Cloud.afterSave("POTrip", function(request) {
 					});
 				}
 			},
-			error: function(object, error) {
+			function(object, error) {
 				console.error("Error when retrieving user to update stats " + error.code + " : " + error.message);
 			}
-		});
+		);
 	}
 });
 
