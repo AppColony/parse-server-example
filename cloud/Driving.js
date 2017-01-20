@@ -9,15 +9,15 @@ Parse.Cloud.define("startedDriving", function(request, response) {
     var friendChannel = "friend-" + request.user.id
     var data = { userId: request.user.id };
 
-    // PushNotifications.sendAndroidPush([driveChannel], "ca.appcolony.distracteddriver.STARTED_DRIVING", data, pushCallbackCounter);
+    PushNotifications.sendAndroidPush([driveChannel], "ca.appcolony.distracteddriver.STARTED_DRIVING", data, pushCallbackCounter);
 
     var alert = {
         "loc-key": "notification-started-driving",
         "loc-args": [request.user.get("displayName")]
     };
-    // PushNotifications.sendIOSPush([driveChannel], alert, true, "startedDriving", data, pushCallbackCounter);
+    PushNotifications.sendIOSPush([driveChannel], alert, true, "startedDriving", data, pushCallbackCounter);
 
-    // PushNotifications.sendIOSPush([friendChannel], null, true, "startedDriving", data, pushCallbackCounter);
+    PushNotifications.sendIOSPush([friendChannel], null, true, "startedDriving", data, pushCallbackCounter);
 });
 
 Parse.Cloud.define("stoppedDriving", function(request, response) {
@@ -29,8 +29,8 @@ Parse.Cloud.define("stoppedDriving", function(request, response) {
     var friendChannel = "friend-" + request.user.id
     var data = { userId: request.user.id };
 
-    // PushNotifications.sendAndroidPush([driveChannel], "ca.appcolony.distracteddriver.STOPPED_DRIVING", data, pushCallbackCounter);
-    // PushNotifications.sendIOSPush([driveChannel, friendChannel], null, true, "stoppedDriving", data, pushCallbackCounter);
+    PushNotifications.sendAndroidPush([driveChannel], "ca.appcolony.distracteddriver.STOPPED_DRIVING", data, pushCallbackCounter);
+    PushNotifications.sendIOSPush([driveChannel, friendChannel], null, true, "stoppedDriving", data, pushCallbackCounter);
 });
 
 Parse.Cloud.define("sendEmergencyPush", function(request, response) {
