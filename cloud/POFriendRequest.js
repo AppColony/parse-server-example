@@ -115,7 +115,7 @@ Parse.Cloud.afterDelete("POFriendRequest", function(request) {
 
 Parse.Cloud.define("requestedFriend", function(request, response) {
 
-	var pushCallbackCounter = new NetworkUtil.CallbackCounter(2, response);
+	var pushCallbackCounter = new NetworkUtil.CallbackCounter(1, response);
 
 	var channels = ["user-" + request.params.requested_user];
 
@@ -125,12 +125,12 @@ Parse.Cloud.define("requestedFriend", function(request, response) {
 	};
 	PushNotifications.sendAndroidPush(channels, "ca.appcolony.distracteddriver.FRIEND_REQUEST", androidPushData, pushCallbackCounter);
 
-	var alert = {
-		"loc-key": "notification-friend-request",
-		"loc-args": [request.user.get("displayName")]
-	};
-	var iOSData = {
-		userId: request.user.id
-	};
-	PushNotifications.sendIOSPush(channels, alert, true, "friendRequest", iOSData, pushCallbackCounter);
+	// var alert = {
+	// 	"loc-key": "notification-friend-request",
+	// 	"loc-args": [request.user.get("displayName")]
+	// };
+	// var iOSData = {
+	// 	userId: request.user.id
+	// };
+	// PushNotifications.sendIOSPush(channels, alert, true, "friendRequest", iOSData, pushCallbackCounter);
 });
