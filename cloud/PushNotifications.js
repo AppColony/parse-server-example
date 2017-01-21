@@ -57,9 +57,5 @@ function sendPush(query, data, callbackCounter) {
     Parse.Push.send({
         where: query,
         data: data
-    },
-    {
-        success: success,
-        error: error
-    }); 
+    }, { useMasterKey: true }).then(success, error);  
 }
