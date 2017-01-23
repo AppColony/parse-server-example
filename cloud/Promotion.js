@@ -19,7 +19,7 @@ Parse.Cloud.define("getPromotion", function(request, response) {
 		function(promotion) {
 			if (promotion) {
 				promotion.relation("viewedUsers").add(user);
-				promotion.save();
+				promotion.save({},{ useMasterKey: true });
 				var promotionJSON = {"url" : promotion.get("url")};
 				response.success(promotionJSON);
 			} else {

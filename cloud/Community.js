@@ -55,21 +55,21 @@ function incrementCommunityTotalsForKey(community, key, response) {
 
 	CommunityTotals.getAllTimeTotals(community, function(allTimeTotals) {
 		allTimeTotals.increment(key);
-		allTimeTotals.save();
+		allTimeTotals.save({},{ useMasterKey: true });
 		if (--queryCount == 0) {
 			response.success();
 		}
 	});
 	CommunityTotals.getDailyTotals(community, currDate, function(dailyTotals) {
 		dailyTotals.increment(key);
-		dailyTotals.save();
+		dailyTotals.save({},{ useMasterKey: true });
 		if (--queryCount == 0) {
 			response.success();
 		}
 	});
 	CommunityTotals.getMonthlyTotals(community, currDate, function(monthlyTotals) {
 		monthlyTotals.increment(key);
-		monthlyTotals.save();
+		monthlyTotals.save({},{ useMasterKey: true });
 		if (--queryCount == 0) {
 			response.success();
 		}

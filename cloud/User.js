@@ -77,30 +77,30 @@ Parse.Cloud.afterSave(Parse.User, function(request) {
         console.log("added new user");
         Totals.getDailyTotals(new Date(), function(dailyTotals) {
             dailyTotals.increment("users");
-            dailyTotals.save();
+            dailyTotals.save({},{ useMasterKey: true });
         });
 
         Totals.getMonthlyTotals(new Date(), function(monthlyTotals) {
             monthlyTotals.increment("users");
-            monthlyTotals.save();
+            monthlyTotals.save({},{ useMasterKey: true });
         });
 
         Totals.getGlobalTotals(function(globalTotals) {
             globalTotals.increment("users");
-            globalTotals.save();
+            globalTotals.save({},{ useMasterKey: true });
         });
 
         //https://www.parse.com/questions/errors-when-trying-to-set-acls-in-user-beforesave
         var roleACL = new Parse.ACL();
         roleACL.setPublicReadAccess(true);
         var role = new Parse.Role("user-" + user.id, roleACL);
-        role.save();
+        role.save({},{ useMasterKey: true });
 
         var userACL = new Parse.ACL(user);
         userACL.setRoleReadAccess("user-" + user.id, true);
         user.setACL(userACL);
         user.addUnique("channels", "user-" + user.id);
-        user.save();
+        user.save({},{ useMasterKey: true });
     }
 
     var dirtyKeys = request.object.get("dirtyKeys");
@@ -180,7 +180,7 @@ Parse.Cloud.define("verifyPhoneShortCode", function(request, response) {
             if (serverShortCode == request.params.phoneShortCode) {
 
                 user.set("phoneNumberVerified", true);
-                user.save().then(
+                user.save({},{ useMasterKey: true }).then(
                     function() {
 
                         //load sha256 library
@@ -279,7 +279,7 @@ Parse.Cloud.define("sendPhoneShortCode", function(request, response) {
 
             var phoneShortCode = Math.floor((Math.random() * 900000) + 100000);
             user.set("phoneShortCode", phoneShortCode);
-            user.save();
+            user.save({},{ useMasterKey: true });
 
             var formattedPhoneShortCode = phoneShortCode.toString()
             formattedPhoneShortCode = formattedPhoneShortCode.slice(0, 3) + " " + formattedPhoneShortCode.slice(3);

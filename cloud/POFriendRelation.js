@@ -17,7 +17,7 @@ Parse.Cloud.beforeSave("POFriendRelation", function(request, response) {
 
 	function addAndRemoveChannels(addedChannel, removedChannel) {
 		request.user.remove("channels", removedChannel);
-		request.user.save().then(
+		request.user.save({},{ useMasterKey: true }).then(
 			function(user) {
 				request.user.addUnique("channels", addedChannel);
 				request.user.save(null, saveOptions);
@@ -52,7 +52,7 @@ Parse.Cloud.beforeSave("POFriendRelation", function(request, response) {
 		    roleQuery.first({ useMasterKey: true }).then(
 		        function(role) {
 		            role.relation("users").add(friendUser);
-		            role.save().then(
+		            role.save({},{ useMasterKey: true }).then(
 		            	function(user) {
 							updateChannelsIfNeeded();
 						},
@@ -127,7 +127,7 @@ Parse.Cloud.afterDelete("POFriendRelation", function(request) {
 		    roleQuery.first({ useMasterKey: true }).then(
 		        function(role) {
 		            role.relation("users").remove(friendUserPointer);
-		            role.save();
+		            role.save({},{ useMasterKey: true });
 		        },
 		        function(error) {
 		            console.log("Failed to remove role for friend relation with error " + error.code + " : " + error.message);

@@ -17,7 +17,7 @@ exports.getGlobalTotals = function(callback) {
 				globalTotals.set("missedSMSCount", 0);
 				globalTotals.set("missedCallCount", 0);
 				globalTotals.set("missedOtherCount", 0);
-				globalTotals.save();
+				globalTotals.save({},{ useMasterKey: true });
 			}
 			callback(globalTotals);
 		},
@@ -48,7 +48,7 @@ exports.getDailyTotals = function(date, callback, failCallback) {
 				dailyTotals.set("missedSMSCount", 0);
 				dailyTotals.set("missedCallCount", 0);
 				dailyTotals.set("missedOtherCount", 0);
-				dailyTotals.save();
+				dailyTotals.save({},{ useMasterKey: true });
 			}
 			callback(dailyTotals);
 		},
@@ -84,7 +84,7 @@ exports.getMonthlyTotals = function(date, callback, failCallback) {
 				monthlyTotals.set("missedSMSCount", 0);
 				monthlyTotals.set("missedCallCount", 0);
 				monthlyTotals.set("missedOtherCount", 0);
-				monthlyTotals.save();
+				monthlyTotals.save({},{ useMasterKey: true });
 			}
 			callback(monthlyTotals);
 		},
@@ -132,7 +132,7 @@ exports.getUserTotals = function(userId, callback, failCallback) {
 				userTotals.set("distanceTravelled", 0);
 				userTotals.set("minutesTravelled", 0);
 				userTotals.set("user", user);
-				userTotals.save();
+				userTotals.save({},{ useMasterKey: true });
 
 				// console.log("UserTotals creating:"+JSON.stringify(userTotals));
 

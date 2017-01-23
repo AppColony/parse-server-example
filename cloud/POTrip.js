@@ -16,20 +16,20 @@ Parse.Cloud.afterSave("POTrip", function(request) {
 	if (!trip.existed()) {
 		Totals.getGlobalTotals(function(globalTotals) {
 			Totals.updateTotals(trip, globalTotals);
-			globalTotals.save();
+			globalTotals.save({},{ useMasterKey: true });
 		});
 		Totals.getDailyTotals(trip.get("startTime"), function(dailyTotals) {
 			Totals.updateTotals(trip, dailyTotals);
-			dailyTotals.save();
+			dailyTotals.save({},{ useMasterKey: true });
 		});
 		Totals.getMonthlyTotals(trip.get("startTime"), function(monthlyTotals) {
 			Totals.updateTotals(trip, monthlyTotals);
-			monthlyTotals.save();
+			monthlyTotals.save({},{ useMasterKey: true });
 
 		});
 		Totals.getUserTotals(trip.get("userId"), function(userTotals) {
 			Totals.updateUserTotals(trip, userTotals);
-			userTotals.save();
+			userTotals.save({},{ useMasterKey: true });
 		});
 
 		var userQuery = new Parse.Query("User");

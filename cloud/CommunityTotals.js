@@ -20,7 +20,7 @@ exports.getAllTimeTotals = function(community, callback) {
 				allTimeTotals.set("missedCallCount", 0);
 				allTimeTotals.set("missedOtherCount", 0);
 				allTimeTotals.set("community", community);
-				allTimeTotals.save();
+				allTimeTotals.save({},{ useMasterKey: true });
 			}
 			callback(allTimeTotals);
 		},
@@ -54,7 +54,7 @@ exports.getDailyTotals = function(community, date, callback, failCallback) {
 				dailyTotals.set("missedCallCount", 0);
 				dailyTotals.set("missedOtherCount", 0);
 				dailyTotals.set("community", community);
-				dailyTotals.save();
+				dailyTotals.save({},{ useMasterKey: true });
 			}
 			callback(dailyTotals);
 		},
@@ -93,7 +93,7 @@ exports.getMonthlyTotals = function(community, date, callback, failCallback) {
 				monthlyTotals.set("missedCallCount", 0);
 				monthlyTotals.set("missedOtherCount", 0);
 				monthlyTotals.set("community", community);
-				monthlyTotals.save();
+				monthlyTotals.save({},{ useMasterKey: true });
 			}
 			callback(monthlyTotals);
 		},
@@ -136,6 +136,6 @@ exports.updateTotals = function(trip, totals) {
 		if (missedOtherCount) {
 			totals.increment("missedOtherCount", missedOtherCount);
 		}
-		totals.save();
+		totals.save({},{ useMasterKey: true });
 	}
 }
