@@ -82,6 +82,9 @@ Parse.Cloud.afterSave("POFriendRequest", function(request) {
 	    		console.log("Inspect Role: \n\n");
 	    		console.log(role);
 	    		console.log("\n\n%%%%%%%%%%%%%%%%%%%%%%%%\n\n");
+	    		console.log("Requested User: \n\n");
+	    		console.log(request.object.get("requestedUser"));
+	    		console.log("\n\n%%%%%%%%%%%%%%%%%%%%%%%%\n\n");
 	            role.relation("users").add(request.object.get("requestedUser"));
 	            role.save({ useMasterKey: true });
 	        },
