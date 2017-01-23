@@ -46,14 +46,6 @@ exports.sendIOSPush = function(channels, alert, contentAvailable, category, data
 }
 
 function sendPush(query, data, callbackCounter) {
-    console.log("\n\n %%%%%%%%%%%%%%%%%%%%%%%%%% \n\n ");
-    console.log("Query");
-    console.log(query);
-    console.log("\n\n %%%%%%%%%%%%%%%%%%%%%%%%%% \n\n ");
-    console.log("Data");
-    console.log(data);
-    console.log("\n\n %%%%%%%%%%%%%%%%%%%%%%%%%% \n\n ");
-
     Parse.Push.send({
         where: query,
         data: data
