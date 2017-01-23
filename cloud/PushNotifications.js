@@ -46,16 +46,22 @@ exports.sendIOSPush = function(channels, alert, contentAvailable, category, data
 }
 
 function sendPush(query, data, callbackCounter) {
-    var success = function() {
-        callbackCounter.success();
-    }
-
-    var error = function(error) {
-        callbackCounter.error(error);
-    }
+    console.log("\n\n %%%%%%%%%%%%%%%%%%%%%%%%%% \n\n ");
+    console.log("Query");
+    console.log(query);
+    console.log("\n\n %%%%%%%%%%%%%%%%%%%%%%%%%% \n\n ");
+    console.log("Data");
+    console.log(data);
+    console.log("\n\n %%%%%%%%%%%%%%%%%%%%%%%%%% \n\n ");
 
     Parse.Push.send({
         where: query,
         data: data
-    }, { useMasterKey: true }).then(success, error);  
+    }, { useMasterKey: true }).then(
+        function(){
+            console.log('Push sent!');
+        }, function(error) { // error
+            console.error("Got an error " + error.code + " : " + error.message);
+        }
+    );  
 }
