@@ -40,6 +40,10 @@ Parse.Cloud.beforeSave("POFriendRequest", function(request, response) {
 					var query = Parse.Query.or(queryFriendRequest, queryInverseFriendRequest);
 					query.find().then(
 						function(results) {
+							console.log("\n\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\n");
+							console.log("Results"+ " (length: " + results.length + "):\n");
+							console.log(results);
+							console.log("\n\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\n");
 							if (results.length > 0) {
 								console.log("Friend request already exists.");
 								response.error(JSON.stringify({
