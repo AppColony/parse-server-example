@@ -79,7 +79,7 @@ Parse.Cloud.afterSave("POFriendRequest", function(request) {
 	    roleQuery.first({ useMasterKey: true }).then(
 	    	function(role) {
 	            role.relation("users").add(request.object.get("requestedUser"));
-	            role.save();
+	            role.save({ useMasterKey: true });
 	        },
 	        function(error) {
 	            console.log("Failed to save role for friend request with error " + error.code + " : " + error.message);
