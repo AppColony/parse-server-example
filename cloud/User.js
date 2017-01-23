@@ -250,7 +250,6 @@ Parse.Cloud.define("verifyPhoneShortCode", function(request, response) {
                             response.error("Error saving phone number");
 
                         });
-
                     },
                     function(myObject, error) {
                         console.error("Error when setting phoneNumberVerified " + error.code + " : " + error.message);
