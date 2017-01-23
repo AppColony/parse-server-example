@@ -270,13 +270,11 @@ Parse.Cloud.define("verifyPhoneShortCode", function(request, response) {
 });
 
 Parse.Cloud.define("sendPhoneShortCode", function(request, response) {
-    Parse.Cloud.useMasterKey();
-
     console.log("user id: " + request.params.userId);
     var userPointer = new Parse.User({
         id: request.params.userId
     });
-    userPointer.fetch().then(
+    userPointer.fetch({ useMasterKey: true }).then(
         function(user) {
             console.log("user: " + user);
 

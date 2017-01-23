@@ -78,7 +78,6 @@ Parse.Cloud.afterSave("POFriendRequest", function(request) {
 	    roleQuery.equalTo("name", "user-" + request.user.id);
 	    roleQuery.first({ useMasterKey: true }).then(
 	    	function(role) {
-	            Parse.Cloud.useMasterKey();
 	            role.relation("users").add(request.object.get("requestedUser"));
 	            role.save();
 	        },
