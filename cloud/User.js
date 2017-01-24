@@ -292,14 +292,14 @@ Parse.Cloud.define("sendPhoneShortCode", function(request, response) {
                 From: "+15873170710",
                 To: user.get("phoneNumber"),
                 Body: "Thanks for using OneTap!  Your code is " + formattedPhoneShortCode
-            }, {
-                success: function(httpResponse) {
+            }).then(
+                function(httpResponse) {
                     response.success();
                 },
-                error: function(httpResponse) {
+                function(httpResponse) {
                     response.error("unable to send shortcode from twilio: " + httpResponse);
                 }
-            });
+            );
 
         },
         function(myObject, error) {
