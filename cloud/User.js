@@ -227,7 +227,7 @@ Parse.Cloud.define("verifyPhoneShortCode", function(request, response) {
                             //find the current public user
                             var query = new Parse.Query(POPublicUser);
                             query.equalTo("user", userPointer);
-                            return query.first();
+                            return query.first({useMasterKey:true});
 
                         }).then(function(object) {
 
