@@ -173,7 +173,7 @@ Parse.Cloud.define("verifyPhoneShortCode", function(request, response) {
     });
     console.log("Saw " + request.params.userId + ". ShortCode: " + request.params.phoneShortCode);
 
-    userPointer.fetch().then(
+    userPointer.fetch({useMasterKey:true}).then(
         function(user) {
             var serverShortCode = user.get("phoneShortCode");
 
@@ -197,7 +197,7 @@ Parse.Cloud.define("verifyPhoneShortCode", function(request, response) {
 
                         var queryPublicUsersWithPhone = new Parse.Query(POPublicUser);
                         queryPublicUsersWithPhone.equalTo("phoneNumberHashed", hashedPhoneNumber);
-                        queryPublicUsersWithPhone.find(function(publicUsers) {
+                        queryPublicUsersWithPhone.find({useMasterKey:true}).then(function(publicUsers) {
 
                             //null out any existing users with this phone number
                             for (var i = 0; i < publicUsers.length; i++) {
@@ -238,7 +238,7 @@ Parse.Cloud.define("verifyPhoneShortCode", function(request, response) {
                                 publicUser.set("user", userPointer);
                             }
                             publicUser.set("phoneNumberHashed", hashedPhoneNumber);
-                            return publicUser.save(null, {useMasterKey:true});
+                            return publicUser.save({}, {useMasterKey:true});
 
                         }).then(function() {
 
