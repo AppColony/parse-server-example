@@ -413,7 +413,7 @@ Parse.Cloud.define("communityStats", function(request, response) {
 	dailyQuery.lessThan("date",new Date());
 	dailyQuery.addDescending("date");
 	dailyQuery.limit(dayIntervals.length); //last 7 days of data
-	dailyQuery.find().then(
+	dailyQuery.find({ useMasterKey: true }).then(
 		function(dailyResults) {
 			responseObj.minutesDrivenDays = [];
 			responseObj.kmDrivenDays = [];
@@ -458,7 +458,7 @@ Parse.Cloud.define("communityStats", function(request, response) {
 
 	var allTimeQuery = new Parse.Query("CommunityAllTimeTotals");
 	allTimeQuery.equalTo("community", community);
-	allTimeQuery.first().then(
+	allTimeQuery.first({ useMasterKey: true }).then(
 		function(results) {
 			responseObj.missedMessages = results.get("missedSMSCount");
 			responseObj.missedCalls = results.get("missedCallCount");
@@ -485,7 +485,7 @@ Parse.Cloud.job("statForwardJob", function(request, status) {
 		// add rows for community totals and normal totals
 
 		var communityQuery = new Parse.Query("Community");
-		communityQuery.find().then(
+		communityQuery.find({ useMasterKey: true }).then(
 			function(results) {
 				var callCount = 2;
 				callCount += results.length * 3;

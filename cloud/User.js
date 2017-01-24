@@ -176,10 +176,6 @@ Parse.Cloud.define("verifyPhoneShortCode", function(request, response) {
     userPointer.fetch({useMasterKey:true}).then(
         function(user) {
             var serverShortCode = user.get("phoneShortCode");
-            console.log("\n\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\n");
-            console.log("serverShortCode:\n");
-            console.log(serverShortCode);
-            console.log("\n\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\n");
 
             if (serverShortCode == request.params.phoneShortCode) {
 
@@ -288,19 +284,22 @@ Parse.Cloud.define("sendPhoneShortCode", function(request, response) {
             var formattedPhoneShortCode = phoneShortCode.toString()
             formattedPhoneShortCode = formattedPhoneShortCode.slice(0, 3) + " " + formattedPhoneShortCode.slice(3);
 
+            console.log('\n\n%%%%%%%%%\n\n');
+            console.log('TWilio');
+            console.log('\n\n%%%%%%%%%\n\n');
             //TODO send shortcode from twilio
-            twilio.sendSMS({
-                From: "+15873170710",
-                To: user.get("phoneNumber"),
-                Body: "Thanks for using OneTap!  Your code is " + formattedPhoneShortCode
-            }, {
-                success: function(httpResponse) {
-                    response.success();
-                },
-                error: function(httpResponse) {
-                    response.error("unable to send shortcode from twilio: " + httpResponse);
-                }
-            });
+            // twilio.sendSMS({
+            //     From: "+15873170710",
+            //     To: user.get("phoneNumber"),
+            //     Body: "Thanks for using OneTap!  Your code is " + formattedPhoneShortCode
+            // }, {
+            //     success: function(httpResponse) {
+            //         response.success();
+            //     },
+            //     error: function(httpResponse) {
+            //         response.error("unable to send shortcode from twilio: " + httpResponse);
+            //     }
+            // });
 
         },
         function(myObject, error) {
