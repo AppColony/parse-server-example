@@ -285,22 +285,21 @@ Parse.Cloud.define("sendPhoneShortCode", function(request, response) {
             formattedPhoneShortCode = formattedPhoneShortCode.slice(0, 3) + " " + formattedPhoneShortCode.slice(3);
 
             console.log('\n\n%%%%%%%%%\n\n');
-            console.log('TWilio \n');
-            
+            console.log('TWilio');
+            console.log('\n\n%%%%%%%%%\n\n');
             //TODO send shortcode from twilio
-            twilio.sendSMS({
+            twilio.sendMessage({
                 From: "+15873170710",
                 To: user.get("phoneNumber"),
                 Body: "Thanks for using OneTap!  Your code is " + formattedPhoneShortCode
-            }).then(
-                function(httpResponse) {
+            }, {
+                success: function(httpResponse) {
                     response.success();
                 },
-                function(httpResponse) {
+                error: function(httpResponse) {
                     response.error("unable to send shortcode from twilio: " + httpResponse);
                 }
-            );
-            console.log('\n\n%%%%%%%%%\n\n');
+            });
 
         },
         function(myObject, error) {
