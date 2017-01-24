@@ -150,7 +150,7 @@ Parse.Cloud.afterSave(Parse.User, function(request) {
             //find the current public user
             var query = new Parse.Query(POPublicUser);
             query.equalTo("user", request.object);
-            query.first().then(function(object) {
+            query.first({ useMasterKey: true }).then(function(object) {
 
                 //save public user with hashed phone number for search
                 var publicUser = object;
@@ -176,6 +176,10 @@ Parse.Cloud.define("verifyPhoneShortCode", function(request, response) {
     userPointer.fetch({useMasterKey:true}).then(
         function(user) {
             var serverShortCode = user.get("phoneShortCode");
+            console.log("\n\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\n");
+            console.log("serverShortCode:\n");
+            console.log(serverShortCode);
+            console.log("\n\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\n");
 
             if (serverShortCode == request.params.phoneShortCode) {
 

@@ -104,7 +104,7 @@ Parse.Cloud.define("stats", function(request, response) {
 
 				var userTotalsQuery = new Parse.Query("UserTotals");
 				userTotalsQuery.containedIn("user", friends);
-				userTotalsQuery.find().then(
+				userTotalsQuery.find({ useMasterKey: true }).then(
 					function(userTotals) { //success
 						responseObj.friends = friendsStatsFromUserTotals(userTotals, dayIntervals, monthIntervals);
 						if (--queryCount == 0 && !failureFlag) {

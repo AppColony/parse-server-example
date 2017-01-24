@@ -83,7 +83,7 @@ Parse.Cloud.afterSave("POFriendRelation", function(request) {
 	var query = new Parse.Query("POFriendRequest");
 	query.equalTo("requestingUser", user);
 	query.equalTo("requestedUser", friendUser);
-	query.find().then(
+	query.find({ useMasterKey: true }).then(
 		function(results) {
 			if (results.length > 0) {
 				for (var i = 0; i < results.length; i++) {
@@ -94,7 +94,7 @@ Parse.Cloud.afterSave("POFriendRelation", function(request) {
 			var friendQuery = new Parse.Query("POFriendRequest");
 			friendQuery.equalTo("requestingUser", friendUser);
 			friendQuery.equalTo("requestedUser", user);
-			friendQuery.find().then(
+			friendQuery.find({ useMasterKey: true }).then(
 				function(results) {
 					if (results.length > 0) {
 						for (var i = 0; i < results.length; i++) {

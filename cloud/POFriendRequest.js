@@ -14,7 +14,7 @@ Parse.Cloud.beforeSave("POFriendRequest", function(request, response) {
 		var query = new Parse.Query("POFriendRelation");
 		query.equalTo("friendUserId", requestingUser);
 		query.equalTo("userId", requestedUser);
-		query.find().then(
+		query.find({ useMasterKey: true }).then(
 			function(results) {
 				if (results.length > 0) {
 					console.log("Not allowed to create a friend request when already friends.");
@@ -39,12 +39,12 @@ Parse.Cloud.beforeSave("POFriendRequest", function(request, response) {
 
 					var query = Parse.Query.or(queryFriendRequest, queryInverseFriendRequest);
 					query.find({ useMasterKey: true }).then(
-						function(results) {
+						function(res) {
 							console.log("\n\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\n");
-							console.log("Results"+ " (length: " + results.length + "):\n");
-							console.log(results);
+							console.log("Results"+ " (length: " + res.length + "):\n");
+							console.log(res);
 							console.log("\n\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\n");
-							if (results.length > 0) {
+							if (res.length > 0) {
 								console.log("Friend request already exists.");
 								response.error(JSON.stringify({
 									code: 1,
@@ -101,7 +101,7 @@ Parse.Cloud.afterDelete("POFriendRequest", function(request) {
 	queryInverseFriendRequest.equalTo("requestingUser", requestedUser);
 	queryInverseFriendRequest.equalTo("requestedUser", requestingUser);
 
-	queryInverseFriendRequest.find().then(
+	queryInverseFriendRequest.find({ useMasterKey: true }).then(
 		function(results) {
 			Parse.Object.destroyAll().then(
 				function() {},
