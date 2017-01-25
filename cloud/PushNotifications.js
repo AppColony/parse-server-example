@@ -10,9 +10,7 @@ exports.sendAndroidPush = function(channels, action, data, callbackCounter) {
             pushData[key] = data[key];
         };
     }
-    console.log('\n\n %%%%%%%%%%% SEND ANDROID PUSH NOTIF %%%%%%%%%%%% \n\n');
     sendPush(installationQuery, pushData, callbackCounter);
-    console.log('\n\n %%%%%%%%%%% %%%%%%%%%%%% \n\n');
 }
 
 exports.sendIOSPush = function(channels, alert, contentAvailable, category, data, callbackCounter) {

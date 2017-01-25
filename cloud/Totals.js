@@ -106,7 +106,7 @@ exports.getUserTotals = function(userId, callback, failCallback) {
 		id: userId
 	});
 	totalQuery.equalTo("user", user);
-	totalQuery.first().then(
+	totalQuery.first({ useMasterKey: true }).then(
 		function(object) {
 			var userTotals = object;
 			if (!userTotals) {
