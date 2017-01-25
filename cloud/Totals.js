@@ -4,8 +4,8 @@ exports.getGlobalTotals = function(callback) {
 	//retrieve the globalTotals object, create with defaults if necessary
 	var GlobalTotals = Parse.Object.extend("GlobalTotals");
 	var totalQuery = new Parse.Query(GlobalTotals);
-	totalQuery.first({
-		success: function(object) {
+	totalQuery.first().then(
+		function(object) {
 			var globalTotals = object;
 			if (!globalTotals) {
 				console.log("GlobalTotals not found, creating");
@@ -17,14 +17,14 @@ exports.getGlobalTotals = function(callback) {
 				globalTotals.set("missedSMSCount", 0);
 				globalTotals.set("missedCallCount", 0);
 				globalTotals.set("missedOtherCount", 0);
-				globalTotals.save();
+				globalTotals.save({},{ useMasterKey: true });
 			}
 			callback(globalTotals);
 		},
-		error: function(error) {
+		function(error) {
 			console.error("Got an error " + error.code + " : " + error.message);
 		}
-	});
+	);
 }
 
 exports.getDailyTotals = function(date, callback, failCallback) {
@@ -34,8 +34,8 @@ exports.getDailyTotals = function(date, callback, failCallback) {
 	var queryDate = new Date(date);
 	queryDate.setHours(0, 0, 0, 0); //only year, month, day remain
 	totalQuery.equalTo("date", queryDate);
-	totalQuery.first({
-		success: function(object) {
+	totalQuery.first().then(
+		function(object) {
 			var dailyTotals = object;
 			if (!dailyTotals) {
 				console.log("DailyTotals not found, creating");
@@ -48,18 +48,18 @@ exports.getDailyTotals = function(date, callback, failCallback) {
 				dailyTotals.set("missedSMSCount", 0);
 				dailyTotals.set("missedCallCount", 0);
 				dailyTotals.set("missedOtherCount", 0);
-				dailyTotals.save();
+				dailyTotals.save({},{ useMasterKey: true });
 			}
 			callback(dailyTotals);
 		},
-		error: function(error) {
+		function(error) {
 			console.error("Got an error " + error.code + " : " + error.message);
 
 			if (failCallback) {
 				failCallback(error);
 			}
 		}
-	});
+	);
 }
 
 exports.getMonthlyTotals = function(date, callback, failCallback) {
@@ -70,8 +70,8 @@ exports.getMonthlyTotals = function(date, callback, failCallback) {
 	queryDate.setHours(0, 0, 0, 0);
 	queryDate.setDate(1); //only year, month remain
 	totalQuery.equalTo("date", queryDate);
-	totalQuery.first({
-		success: function(object) {
+	totalQuery.first().then(
+		function(object) {
 			var monthlyTotals = object;
 			if (!monthlyTotals) {
 				console.log("MonthlyTotals not found, creating");
@@ -84,18 +84,18 @@ exports.getMonthlyTotals = function(date, callback, failCallback) {
 				monthlyTotals.set("missedSMSCount", 0);
 				monthlyTotals.set("missedCallCount", 0);
 				monthlyTotals.set("missedOtherCount", 0);
-				monthlyTotals.save();
+				monthlyTotals.save({},{ useMasterKey: true });
 			}
 			callback(monthlyTotals);
 		},
-		error: function(error) {
+		function(error) {
 			console.error("Got an error " + error.code + " : " + error.message);
 
 			if (failCallback) {
 				failCallback(error);
 			}
 		}
-	});
+	);
 }
 
 exports.getUserTotals = function(userId, callback, failCallback) {
@@ -106,8 +106,8 @@ exports.getUserTotals = function(userId, callback, failCallback) {
 		id: userId
 	});
 	totalQuery.equalTo("user", user);
-	totalQuery.first({
-		success: function(object) {
+	totalQuery.first({ useMasterKey: true }).then(
+		function(object) {
 			var userTotals = object;
 			if (!userTotals) {
 
@@ -132,21 +132,21 @@ exports.getUserTotals = function(userId, callback, failCallback) {
 				userTotals.set("distanceTravelled", 0);
 				userTotals.set("minutesTravelled", 0);
 				userTotals.set("user", user);
-				userTotals.save();
+				userTotals.save({},{ useMasterKey: true });
 
 				// console.log("UserTotals creating:"+JSON.stringify(userTotals));
 
 			}
 			callback(userTotals);
 		},
-		error: function(error) {
+		function(error) {
 			console.error("Got an error " + error.code + " : " + error.message);
 
 			if (failCallback) {
 				failCallback(error);
 			}
 		}
-	});
+	);
 }
 
 exports.updateTotals = function(trip, totals) {

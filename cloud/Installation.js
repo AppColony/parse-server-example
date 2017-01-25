@@ -10,17 +10,16 @@ Parse.Cloud.beforeSave(Parse.Installation, function(request, response) {
             id: installation.get("user").id
         });
 
-        userPointer.fetch({
-            success: function(user) {
+        userPointer.fetch({ useMasterKey: true }).then(
+            function(user) {
                 installation.set("channels", user.get("channels"));
                 response.success();
             },
-            error: function(myObject, error) {
+            function(myObject, error) {
                 console.error("Unable to find user " + userPointer.id + " " + error.code + " : " + error.message);
                 response.error();
-            },
-            useMasterKey:true
-        });
+            }
+        );
     } else {
         response.success();
     }

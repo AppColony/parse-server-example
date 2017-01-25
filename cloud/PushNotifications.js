@@ -10,7 +10,6 @@ exports.sendAndroidPush = function(channels, action, data, callbackCounter) {
             pushData[key] = data[key];
         };
     }
-
     sendPush(installationQuery, pushData, callbackCounter);
 }
 
@@ -46,20 +45,14 @@ exports.sendIOSPush = function(channels, alert, contentAvailable, category, data
 }
 
 function sendPush(query, data, callbackCounter) {
-    var success = function() {
-        callbackCounter.success();
-    }
-
-    var error = function(error) {
-        callbackCounter.error(error);
-    }
-
     Parse.Push.send({
         where: query,
         data: data
-    },
-    {
-        success: success,
-        error: error
-    }); 
+    }, { useMasterKey: true }).then(
+        function(){
+            callbackCounter.success();
+        }, function(error) { // error
+            callbackCounter.error(error);
+        }
+    );  
 }

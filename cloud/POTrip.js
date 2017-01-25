@@ -16,25 +16,25 @@ Parse.Cloud.afterSave("POTrip", function(request) {
 	if (!trip.existed()) {
 		Totals.getGlobalTotals(function(globalTotals) {
 			Totals.updateTotals(trip, globalTotals);
-			globalTotals.save();
+			globalTotals.save({},{ useMasterKey: true });
 		});
 		Totals.getDailyTotals(trip.get("startTime"), function(dailyTotals) {
 			Totals.updateTotals(trip, dailyTotals);
-			dailyTotals.save();
+			dailyTotals.save({},{ useMasterKey: true });
 		});
 		Totals.getMonthlyTotals(trip.get("startTime"), function(monthlyTotals) {
 			Totals.updateTotals(trip, monthlyTotals);
-			monthlyTotals.save();
+			monthlyTotals.save({},{ useMasterKey: true });
 
 		});
 		Totals.getUserTotals(trip.get("userId"), function(userTotals) {
 			Totals.updateUserTotals(trip, userTotals);
-			userTotals.save();
+			userTotals.save({},{ useMasterKey: true });
 		});
 
 		var userQuery = new Parse.Query("User");
-		userQuery.get(trip.get("userId"), {
-			success: function(user) {
+		userQuery.get(trip.get("userId")).then(
+			function(user) {
 				var community = user.get("community");
 				if (community != null) {
 					CommunityTotals.getAllTimeTotals(community, function(globalTotals) {
@@ -48,10 +48,10 @@ Parse.Cloud.afterSave("POTrip", function(request) {
 					});
 				}
 			},
-			error: function(object, error) {
+			function(object, error) {
 				console.error("Error when retrieving user to update stats " + error.code + " : " + error.message);
 			}
-		});
+		);
 	}
 });
 
@@ -92,7 +92,6 @@ function checkTripValidity(trip) {
 }
 
 Parse.Cloud.define("userAggregateData", function(request, response) {
-	Parse.Cloud.useMasterKey();
 
 	var counts = {};
 	counts.sumSMS = 0;
@@ -108,8 +107,8 @@ Parse.Cloud.define("userAggregateData", function(request, response) {
 
 	var query = new Parse.Query("UserTotals");
 	query.equalTo("user", user);
-	query.first({
-		success: function(totals) {
+	query.first({ useMasterKey: true }).then(
+		function(totals) {
 			counts.sumSMS = totals.get("missedSMSCount");
 			counts.sumCall = totals.get("missedCallCount");
 			counts.sumOther = totals.get("missedOtherCount");
@@ -118,10 +117,10 @@ Parse.Cloud.define("userAggregateData", function(request, response) {
 			response.success(counts);
 
 		},
-		error: function(error) {
+		function(error) {
 			//this is valid if the user doesn't have any trips
 			console.log("Couldn't look up UserTotals for: "+request.params.userId);
 			response.success(counts);
 		}
-	});
+	);
 });

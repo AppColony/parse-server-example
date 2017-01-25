@@ -14,8 +14,8 @@ Parse.Cloud.beforeSave("POFriendRequest", function(request, response) {
 		var query = new Parse.Query("POFriendRelation");
 		query.equalTo("friendUserId", requestingUser);
 		query.equalTo("userId", requestedUser);
-		query.find({
-			success: function(results) {
+		query.find({ useMasterKey: true }).then(
+			function(results) {
 				if (results.length > 0) {
 					console.log("Not allowed to create a friend request when already friends.");
 					response.error(JSON.stringify({
@@ -38,9 +38,9 @@ Parse.Cloud.beforeSave("POFriendRequest", function(request, response) {
 					}
 
 					var query = Parse.Query.or(queryFriendRequest, queryInverseFriendRequest);
-					query.find({
-						success: function(results) {
-							if (results.length > 0) {
+					query.find({ useMasterKey: true }).then(
+						function(res) {
+							if (res.length > 0) {
 								console.log("Friend request already exists.");
 								response.error(JSON.stringify({
 									code: 1,
@@ -50,18 +50,18 @@ Parse.Cloud.beforeSave("POFriendRequest", function(request, response) {
 								response.success();
 							}
 						},
-						error: function(error) {
-							console.log("error when checking for existing relations, allowing to continute");
+						function(error) {
+							console.log("error when checking for existing relations, allowing to continue");
 							response.success();
 						}
-					});
+					);
 				}
 			},
-			error: function(error) {
-				console.log("error when checking for existing relations, allowing to continute");
+			function(error) {
+				console.log("error when checking for existing relations, allowing to continue");
 				response.success();
 			}
-		});
+		);
 	} else {
 		console.log("Love thyself.");
 		response.error(JSON.stringify({
@@ -76,17 +76,15 @@ Parse.Cloud.afterSave("POFriendRequest", function(request) {
 	if (!request.object.existed()) {
 	    var roleQuery = new Parse.Query(Parse.Role);
 	    roleQuery.equalTo("name", "user-" + request.user.id);
-	    roleQuery.first({
-	        success: function(role) {
-	            Parse.Cloud.useMasterKey();
+	    roleQuery.first({ useMasterKey: true }).then(
+	    	function(role) {
 	            role.relation("users").add(request.object.get("requestedUser"));
-	            role.save();
+	            role.save({},{ useMasterKey: true });
 	        },
-	        error: function(error) {
+	        function(error) {
 	            console.log("Failed to save role for friend request with error " + error.code + " : " + error.message);
-	        },
-	        useMasterKey:true
-	    });
+	        }
+	    );
 	}
 
 });
@@ -99,24 +97,24 @@ Parse.Cloud.afterDelete("POFriendRequest", function(request) {
 	queryInverseFriendRequest.equalTo("requestingUser", requestedUser);
 	queryInverseFriendRequest.equalTo("requestedUser", requestingUser);
 
-	queryInverseFriendRequest.find({
-		success: function(results) {
-			Parse.Object.destroyAll(results, {
-				success: function() {},
-				error: function(error) {
+	queryInverseFriendRequest.find({ useMasterKey: true }).then(
+		function(results) {
+			Parse.Object.destroyAll({ useMasterKey: true }).then(
+				function() {},
+				function(error) {
 					console.error("Error deleting inverse friend relations " + error.code + ": " + error.message);
 				}
-			});
+			);
 		},
-		error: function(error) {
+		function(error) {
 			console.error("Error finding inverse friend relations " + error.code + ": " + error.message);
 		}
-	});
+	);
 });
 
 Parse.Cloud.define("requestedFriend", function(request, response) {
 
-	var pushCallbackCounter = new NetworkUtil.CallbackCounter(2, response);
+	var pushCallbackCounter = new NetworkUtil.CallbackCounter(1, response);
 
 	var channels = ["user-" + request.params.requested_user];
 
@@ -124,14 +122,15 @@ Parse.Cloud.define("requestedFriend", function(request, response) {
 		userId: request.user.id,
 		userName: request.user.get("displayName")
 	};
+	
 	PushNotifications.sendAndroidPush(channels, "ca.appcolony.distracteddriver.FRIEND_REQUEST", androidPushData, pushCallbackCounter);
-
-	var alert = {
-		"loc-key": "notification-friend-request",
-		"loc-args": [request.user.get("displayName")]
-	};
-	var iOSData = {
-		userId: request.user.id
-	};
-	PushNotifications.sendIOSPush(channels, alert, true, "friendRequest", iOSData, pushCallbackCounter);
+	
+	// var alert = {
+	// 	"loc-key": "notification-friend-request",
+	// 	"loc-args": [request.user.get("displayName")]
+	// };
+	// var iOSData = {
+	// 	userId: request.user.id
+	// };
+	// PushNotifications.sendIOSPush(channels, alert, true, "friendRequest", iOSData, pushCallbackCounter);
 });

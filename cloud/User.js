@@ -77,30 +77,30 @@ Parse.Cloud.afterSave(Parse.User, function(request) {
         console.log("added new user");
         Totals.getDailyTotals(new Date(), function(dailyTotals) {
             dailyTotals.increment("users");
-            dailyTotals.save();
+            dailyTotals.save({},{ useMasterKey: true });
         });
 
         Totals.getMonthlyTotals(new Date(), function(monthlyTotals) {
             monthlyTotals.increment("users");
-            monthlyTotals.save();
+            monthlyTotals.save({},{ useMasterKey: true });
         });
 
         Totals.getGlobalTotals(function(globalTotals) {
             globalTotals.increment("users");
-            globalTotals.save();
+            globalTotals.save({},{ useMasterKey: true });
         });
 
         //https://www.parse.com/questions/errors-when-trying-to-set-acls-in-user-beforesave
         var roleACL = new Parse.ACL();
         roleACL.setPublicReadAccess(true);
         var role = new Parse.Role("user-" + user.id, roleACL);
-        role.save();
+        role.save({},{ useMasterKey: true });
 
         var userACL = new Parse.ACL(user);
         userACL.setRoleReadAccess("user-" + user.id, true);
         user.setACL(userACL);
         user.addUnique("channels", "user-" + user.id);
-        user.save();
+        user.save({},{ useMasterKey: true });
     }
 
     var dirtyKeys = request.object.get("dirtyKeys");
@@ -108,8 +108,8 @@ Parse.Cloud.afterSave(Parse.User, function(request) {
     if (dirtyKeys.indexOf("channels") > -1) {
         var installationQuery = new Parse.Query(Parse.Installation);
         installationQuery.equalTo("user", user);
-        installationQuery.find({
-            success: function(installations) {
+        installationQuery.find({ useMasterKey: true }).then(
+            function(installations) {
                 if (installations) {
                     for (var i = 0; i < installations.length; i++) {
                         var installation = installations[i];
@@ -120,11 +120,10 @@ Parse.Cloud.afterSave(Parse.User, function(request) {
                     }
                 }
             },
-            error: function(error) {
+            function(error) {
                 console.error("Unable to find installation " + error.code + " : " + error.message);
-            },
-            useMasterKey:true
-        });
+            }
+        );
     }
 
     for (var i in dirtyKeys) {
@@ -151,7 +150,7 @@ Parse.Cloud.afterSave(Parse.User, function(request) {
             //find the current public user
             var query = new Parse.Query(POPublicUser);
             query.equalTo("user", request.object);
-            query.first().then(function(object) {
+            query.first({ useMasterKey: true }).then(function(object) {
 
                 //save public user with hashed phone number for search
                 var publicUser = object;
@@ -174,15 +173,15 @@ Parse.Cloud.define("verifyPhoneShortCode", function(request, response) {
     });
     console.log("Saw " + request.params.userId + ". ShortCode: " + request.params.phoneShortCode);
 
-    userPointer.fetch({
-        success: function(user) {
+    userPointer.fetch({useMasterKey:true}).then(
+        function(user) {
             var serverShortCode = user.get("phoneShortCode");
 
             if (serverShortCode == request.params.phoneShortCode) {
 
                 user.set("phoneNumberVerified", true);
-                user.save(null, {
-                    success: function() {
+                user.save({},{ useMasterKey: true }).then(
+                    function() {
 
                         //load sha256 library
                         var jssha = require('./jssha256.js');
@@ -198,7 +197,7 @@ Parse.Cloud.define("verifyPhoneShortCode", function(request, response) {
 
                         var queryPublicUsersWithPhone = new Parse.Query(POPublicUser);
                         queryPublicUsersWithPhone.equalTo("phoneNumberHashed", hashedPhoneNumber);
-                        queryPublicUsersWithPhone.find(function(publicUsers) {
+                        queryPublicUsersWithPhone.find({useMasterKey:true}).then(function(publicUsers) {
 
                             //null out any existing users with this phone number
                             for (var i = 0; i < publicUsers.length; i++) {
@@ -228,7 +227,7 @@ Parse.Cloud.define("verifyPhoneShortCode", function(request, response) {
                             //find the current public user
                             var query = new Parse.Query(POPublicUser);
                             query.equalTo("user", userPointer);
-                            return query.first();
+                            return query.first({useMasterKey:true});
 
                         }).then(function(object) {
 
@@ -239,7 +238,7 @@ Parse.Cloud.define("verifyPhoneShortCode", function(request, response) {
                                 publicUser.set("user", userPointer);
                             }
                             publicUser.set("phoneNumberHashed", hashedPhoneNumber);
-                            return publicUser.save(null, {useMasterKey:true});
+                            return publicUser.save({}, {useMasterKey:true});
 
                         }).then(function() {
 
@@ -251,61 +250,57 @@ Parse.Cloud.define("verifyPhoneShortCode", function(request, response) {
                             response.error("Error saving phone number");
 
                         });
-
                     },
-                    error: function(myObject, error) {
+                    function(myObject, error) {
                         console.error("Error when setting phoneNumberVerified " + error.code + " : " + error.message);
                         response.error("Error when setting phoneNumberVerified");
                     }
-                });
+                );
             } else {
                 console.error("Invalid shortcode sent for " + request.params.userId + ". Expecting: " + serverShortCode + " Recieved: " + request.params.phoneShortCode);
                 response.error("Invalid shortcode sent");
             }
         },
-        error: function(myObject, error) {
+        function(myObject, error) {
             console.error("Unable to find user to verify " + error.code + " : " + error.message);
             response.error("Unable to find user to verify");
         }
-    });
+    );
 });
 
 Parse.Cloud.define("sendPhoneShortCode", function(request, response) {
-    Parse.Cloud.useMasterKey();
-
     console.log("user id: " + request.params.userId);
     var userPointer = new Parse.User({
         id: request.params.userId
     });
-    userPointer.fetch({
-        success: function(user) {
+    userPointer.fetch({ useMasterKey: true }).then(
+        function(user) {
             console.log("user: " + user);
 
             var phoneShortCode = Math.floor((Math.random() * 900000) + 100000);
             user.set("phoneShortCode", phoneShortCode);
-            user.save();
+            user.save({},{ useMasterKey: true });
 
             var formattedPhoneShortCode = phoneShortCode.toString()
             formattedPhoneShortCode = formattedPhoneShortCode.slice(0, 3) + " " + formattedPhoneShortCode.slice(3);
 
-            //TODO send shortcode from twilio
-            twilio.sendSMS({
+            twilio.sendMessage({
                 From: "+15873170710",
                 To: user.get("phoneNumber"),
                 Body: "Thanks for using OneTap!  Your code is " + formattedPhoneShortCode
-            }, {
-                success: function(httpResponse) {
+            }).then(
+                function(httpResponse) {
                     response.success();
                 },
-                error: function(httpResponse) {
+                function(httpResponse) {
                     response.error("unable to send shortcode from twilio: " + httpResponse);
                 }
-            });
+            );
 
         },
-        error: function(myObject, error) {
+        function(myObject, error) {
             console.error("Unable to find user to send shortcode " + error.code + " : " + error.message);
             response.error("Unable to find user to verify");
         }
-    });
+    );
 });
