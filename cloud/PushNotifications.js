@@ -52,12 +52,9 @@ function sendPush(query, data, callbackCounter) {
         data: data
     }, { useMasterKey: true }).then(
         function(){
-            console.log('\n\n %%%%%%%%%%% SEND PUSH NOTIF %%%%%%%%%%%% \n\n');
-            console.log('Push sent!');
-            console.log('\n\n %%%%%%%%%%% %%%%%%%%%%%% \n\n');
-            response.success();
+            callbackCounter.success();
         }, function(error) { // error
-            console.error("Got an error " + error.code + " : " + error.message);
+            callbackCounter.error(error);
         }
     );  
 }
