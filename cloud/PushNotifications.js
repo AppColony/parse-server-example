@@ -10,8 +10,9 @@ exports.sendAndroidPush = function(channels, action, data, callbackCounter) {
             pushData[key] = data[key];
         };
     }
-
+    console.log('\n\n %%%%%%%%%%% SEND ANDROID PUSH NOTIF %%%%%%%%%%%% \n\n');
     sendPush(installationQuery, pushData, callbackCounter);
+    console.log('\n\n %%%%%%%%%%% %%%%%%%%%%%% \n\n');
 }
 
 exports.sendIOSPush = function(channels, alert, contentAvailable, category, data, callbackCounter) {
@@ -51,7 +52,9 @@ function sendPush(query, data, callbackCounter) {
         data: data
     }, { useMasterKey: true }).then(
         function(){
-            // console.log('Push sent!');
+            console.log('\n\n %%%%%%%%%%% SEND PUSH NOTIF %%%%%%%%%%%% \n\n');
+            console.log('Push sent!');
+            console.log('\n\n %%%%%%%%%%% %%%%%%%%%%%% \n\n');
             response.success();
         }, function(error) { // error
             console.error("Got an error " + error.code + " : " + error.message);

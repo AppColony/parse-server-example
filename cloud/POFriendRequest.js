@@ -122,8 +122,9 @@ Parse.Cloud.define("requestedFriend", function(request, response) {
 		userId: request.user.id,
 		userName: request.user.get("displayName")
 	};
+	console.log('\n\n %%%%%%%%%%% SEND FRIEND PUSH NOTIF %%%%%%%%%%%% \n\n');
 	PushNotifications.sendAndroidPush(channels, "ca.appcolony.distracteddriver.FRIEND_REQUEST", androidPushData, pushCallbackCounter);
-
+	console.log('\n\n %%%%%%%%%%% git  %%%%%%%%%%%% \n\n');
 	// var alert = {
 	// 	"loc-key": "notification-friend-request",
 	// 	"loc-args": [request.user.get("displayName")]
