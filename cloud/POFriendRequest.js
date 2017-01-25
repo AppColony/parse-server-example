@@ -99,7 +99,7 @@ Parse.Cloud.afterDelete("POFriendRequest", function(request) {
 
 	queryInverseFriendRequest.find({ useMasterKey: true }).then(
 		function(results) {
-			Parse.Object.destroyAll().then(
+			Parse.Object.destroyAll({ useMasterKey: true }).then(
 				function() {},
 				function(error) {
 					console.error("Error deleting inverse friend relations " + error.code + ": " + error.message);

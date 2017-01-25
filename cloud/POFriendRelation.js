@@ -85,7 +85,7 @@ Parse.Cloud.afterSave("POFriendRelation", function(request) {
 		function(results) {
 			if (results.length > 0) {
 				for (var i = 0; i < results.length; i++) {
-					results[i].destroy();
+					results[i].destroy({ useMasterKey: true });
 				}
 			}
 
@@ -96,7 +96,7 @@ Parse.Cloud.afterSave("POFriendRelation", function(request) {
 				function(results) {
 					if (results.length > 0) {
 						for (var i = 0; i < results.length; i++) {
-							results[i].destroy();
+							results[i].destroy({ useMasterKey: true });
 						}
 					}
 				},
