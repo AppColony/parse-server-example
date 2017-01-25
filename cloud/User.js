@@ -284,10 +284,6 @@ Parse.Cloud.define("sendPhoneShortCode", function(request, response) {
             var formattedPhoneShortCode = phoneShortCode.toString()
             formattedPhoneShortCode = formattedPhoneShortCode.slice(0, 3) + " " + formattedPhoneShortCode.slice(3);
 
-            console.log('\n\n%%%%%%%%%\n\n');
-            console.log('TWilio');
-            console.log('\n\n%%%%%%%%%\n\n');
-            //TODO send shortcode from twilio
             twilio.sendMessage({
                 From: "+15873170710",
                 To: user.get("phoneNumber"),

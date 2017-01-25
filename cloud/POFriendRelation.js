@@ -6,21 +6,19 @@ Parse.Cloud.beforeSave("POFriendRelation", function(request, response) {
 
 	var friendUser = request.object.get("friendUser");
 
-	var saveOptions = {
-		success: function(user) {
-			response.success();
-		},
-		error: function(user, error) {
-			response.error("Unable to save the user");
-  		}
-	}
-
 	function addAndRemoveChannels(addedChannel, removedChannel) {
 		request.user.remove("channels", removedChannel);
 		request.user.save({},{ useMasterKey: true }).then(
 			function(user) {
 				request.user.addUnique("channels", addedChannel);
-				request.user.save(null, saveOptions);
+				request.user.save(null, { useMasterKey: true }).then(
+					function(user) {
+						response.success();
+					},
+					function(user, error) {
+						response.error("Unable to save the user");
+			  		}
+				);
 			},
 			function(user, error) {
 				response.error("Unable to save the user");
