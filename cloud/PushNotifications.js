@@ -52,6 +52,7 @@ function sendPush(query, data, callbackCounter) {
     }, { useMasterKey: true }).then(
         function(){
             // console.log('Push sent!');
+            response.success();
         }, function(error) { // error
             console.error("Got an error " + error.code + " : " + error.message);
         }
