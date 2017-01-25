@@ -27,6 +27,14 @@ var api = new ParseServer({
       senderId: process.env.FIREBASE_SENDER_ID || '', // The Sender ID of GCM
       apiKey: process.env.FIREBASE_SERVER_KEY || '' // The Server API Key of GCM
     }
+  },
+  emailAdapter: {
+    module: 'parse-server-simple-mailgun-adapter',
+    options: {
+      fromAddress: process.env.MAILGUN_FROM_ADDRESS || '', // The address that your emails come from
+      domain: process.env.MAILGUN_DOMAIN || '',// Your domain from mailgun.com
+      apiKey: process.env.MAILGUN_API_KEY || '' // Your API key from mailgun.com
+    }
   }
 });
 // Client-keys like the javascript key or the .NET key are not necessary with parse-server
